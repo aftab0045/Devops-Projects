@@ -1,0 +1,32 @@
+---
+- name: File and Directory Management
+  hosts: localhost
+  become: yes
+
+  tasks:
+
+    - name: Create /root/aws directory
+      file:
+        path: /root/aws
+        state: directory
+
+    - name: Create KGF.txt file
+      file:
+        path: /root/aws/KGF.txt
+        state: touch
+
+    - name: Create /home/ec2-user/rocky directory
+      file:
+        path: /home/ec2-user/rocky
+        state: directory
+
+    - name: Copy KGF.txt to rocky directory
+      copy:
+        src: /root/aws/KGF.txt
+        dest: /home/ec2-user/rocky/KGF.txt
+        remote_src: yes
+
+    - name: Set permission 700 on rocky directory
+      file:
+        path: /home/ec2-user/rocky
+        mode: '0700'
