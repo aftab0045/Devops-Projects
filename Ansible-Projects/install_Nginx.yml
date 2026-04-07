@@ -1,0 +1,33 @@
+---
+- name : Install Nginx
+  hosts : localhost
+  become : true
+  tasks : 
+    - name : Install Nginx
+      ansible.builtin.dnf:
+        name : nginx
+        state : present
+
+    - name : start nginx and enables
+      ansible.builtin.systemd_service:
+        name : nginx
+        state : stopped
+        enabled : false
+
+    - name : Install Appache
+      ansible.builtin.dnf:
+        name : httpd
+        state : present
+
+
+    - name : start Apache and enables
+      ansible.builtin.systemd_service:
+        name : httpd
+        state : started
+        enabled : true
+
+    - name : host simple html page on nginx
+      ansible.builtin.copy:
+        dest: /var/www/html/index.html
+        content: '<h1> This is HTML page from ANSIBLE </h1>'
+        
