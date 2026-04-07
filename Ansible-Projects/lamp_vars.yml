@@ -1,0 +1,54 @@
+# Installation of LAMP using variables
+---
+- name : Install LAMP
+  hosts : localhost
+  become : true
+  vars :
+    web_pkg : httpd
+    db_pkg : mariadb105-server
+    app_pkg : 
+      - php
+      - php-fpm
+    web_svc : httpd
+    db_svc : mariadb
+    app_svc : php-fpm
+    web_file_path : /var/www/html/index.php 
+  tasks:
+    - name : Install apache
+      ansible.builtin.dnf:
+        name : "{{web_pkg}}"
+        state : present
+    - name : Install mariadb
+      ansible.builtin.dnf:
+        name : "{{db_pkg}}"
+        state : present    
+    - name : Install php
+      ansible.builtin.dnf:
+        name : "{{app_pkg}}"
+        state : present    
+    
+    # Start and Enable
+    - name : start apache
+      ansible.builtin.systemd_service:
+        name : "{{web_svc}}"
+        state : started
+        enabled : true    
+    - name : start mariadb
+      ansible.builtin.systemd_service:
+        name : "{{db_svc}}"
+        state : started
+        enabled : true        
+    - name : start php
+      ansible.builtin.systemd_service:
+        name : "{{app_svc}}"
+        state : started
+        enabled : true    
+
+    # Deploy app
+    - name : deploy page
+      ansible.builtin.copy:
+        dest : "{{web_file_path}}"   
+        content :
+          <?php
+           phpinfo();
+          ?>  
