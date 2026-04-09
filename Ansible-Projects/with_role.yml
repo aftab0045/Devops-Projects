@@ -1,0 +1,28 @@
+# Installtion using Roles
+---
+- name : Install of Nginx with role
+  hosts : localhost
+  become : true
+  #vars : 
+  #  pkg : nginx
+  #  svc : nginx
+  # file_path : /usr/share/nginx/html/index.html
+  
+  #tasks :
+  #- name : Installation of nginx
+  #  ansible.builtin.dnf:
+  #   name : "{{pkg}}"
+  #   state : present
+  #- name : Start and Enable
+  # ansible.builtin.systemd_service:
+  #   name : "{{svc}}"
+  #    state : started
+  #   enabled : true
+  #- name : Host app
+  # ansible.builtin.copy:
+  #   src : files/index.html
+  #   dest : "{{file_path}}"
+
+  
+  roles :
+    - httpd
