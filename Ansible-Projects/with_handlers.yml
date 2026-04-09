@@ -1,0 +1,44 @@
+---
+- name: installtion of nginx with handler
+  hosts: localhost
+  become: true
+  vars:
+   pkg: nginx
+   svc: nginx
+   file_path: /usr/share/nginx/html/index.html
+   conf_path: /etc/nginx/conf.d/custom.conf
+  tasks:
+  - name: installtion of nginx
+    ansible.builtin.dnf:
+      name: "{{pkg}}"
+      state: present
+  - name: start and enable svc
+    ansible.builtin.systemd_service:
+      name: "{{svc}}"
+      state: started
+      enabled: true
+  - name: add configuartion block
+    ansible.builtin.blockinfile:
+      path: "{{conf_path}}"
+      create: yes
+      block: |
+        server {
+           listen 81;
+           root /usr/share/nginx/html/;
+           index  index.html;
+        }
+    notify: restart nginx
+
+  - name: deploy nginx
+    ansible.builtin.copy:
+      dest: "{{file_path}}"
+      content: <h1>This is a app with handler</h1>
+
+  handlers:
+  - name: restart nginx
+    ansible.builtin.service:
+      name: "{{svc}}"
+      state: restarted
+
+
+ 
